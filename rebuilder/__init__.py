@@ -3,7 +3,6 @@
 import argparse
 from collections import namedtuple
 import logging
-import os
 import re
 from shlex import quote
 import subprocess
