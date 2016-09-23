@@ -37,7 +37,8 @@ def switch_branch(logger, branch, orig=None):
     logger.info('$ git checkout %s', branch)
     run(['git', 'checkout', branch], check=True)
     if orig:
-        proc = run(['git', 'diff', branch, orig], check=True)
+        proc = run(['git', 'diff', branch, orig],
+                   check=True, stdout=subprocess.PIPE)
         if proc.stdout:
             logger.info('$ git reset --hard %s', orig)
             run(['git', 'reset', '--hard', orig], check=True)
