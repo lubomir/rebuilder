@@ -16,6 +16,7 @@ _rebuilder()
 
     local commands="mock build scratch"
     local completions=""
+    local branches=$(_rebuilder_branch)
 
     case "$prev" in
         "rebuilder")
@@ -29,7 +30,9 @@ _rebuilder()
 
 
     if in_array "$prev" "$commands --srpm"; then
-        completions="$completions $(_rebuilder_branch)"
+        completions="$completions $branches"
+    elif in_array "$prev" "$branches"; then
+        completions="$completions $branches"
     else
         completions="$completions $commands"
     fi
