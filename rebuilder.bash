@@ -14,7 +14,7 @@ _rebuilder()
     local cur=${COMP_WORDS[COMP_CWORD]}
     local prev=${COMP_WORDS[COMP_CWORD - 1]}
 
-    local commands="mock build scratch"
+    local commands="mock build scratch release"
     local completions=""
     local branches=$(_rebuilder_branch)
 
