@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-from collections import namedtuple
 import logging
 import re
-from shlex import quote
 import subprocess
 import sys
-from urllib.parse import urlparse
 import tempfile
+from collections import namedtuple
+from shlex import quote
+from urllib.parse import urlparse
 
 
 ToolSet = namedtuple('ToolSet', ['rpkg', 'koji'])
@@ -135,6 +135,25 @@ def handle_mock(logger, opts):
     return failed
 
 
+def handle_release(logger, opts):
+    proc = run(['rebuilder', 'scratch', '--srpm'] + opts.branches)
+    if proc.returncode != 0:
+        logger.error('SRPM scratch build failed')
+        sys.exit(1)
+    proc = run(['git', 'push', 'origin'] + opts.branches)
+    if proc.returncode != 0:
+        logger.error('Failed to push to dist-git')
+        sys.exit(1)
+    proc = run(['rebuilder', 'scratch'] + opts.branches)
+    if proc.returncode != 0:
+        logger.error('SCM scratch build failed')
+        sys.exit(1)
+    proc = run(['rebuilder', 'build'] + opts.branches)
+    if proc.returncode != 0:
+        logger.error('Build failed')
+        sys.exit(1)
+
+
 def get_parser():
     parser = argparse.ArgumentParser(
         description='rebuild package in many branches')
@@ -155,6 +174,9 @@ def get_parser():
 
     mock_parser = subparsers.add_parser('mock', parents=[branch_parser])
     mock_parser.set_defaults(func=handle_mock)
+
+    release_parser = subparsers.add_parser('release', parents=[branch_parser])
+    release_parser.set_defaults(func=handle_release)
 
     return parser
 
