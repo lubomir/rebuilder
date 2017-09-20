@@ -21,7 +21,7 @@ requires = [
 
 setup(
     name='rebuilder',
-    version='0.4.0',
+    version='0.5.0',
     description='Rebuild many packages',
     long_description=long_description,
     author='Lubomír Sedlář',
